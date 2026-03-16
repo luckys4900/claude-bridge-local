@@ -4,7 +4,7 @@
  */
 import http from "http";
 import https from "https";
-import { readFileSync } from "fs";
+import { readFileSync, promises as fsp } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -24,6 +24,96 @@ const GLM_USE_CODING = cfg.glm_use_coding_plan === true || !!cfg.glm_zai_key;
 const GLM_BASE       = GLM_USE_CODING ? "https://api.z.ai/api/coding/paas/v4" : "https://open.bigmodel.cn/api/paas/v4";
 const MODEL          = process.env.OLLAMA_MODEL || "llama3.2:latest";
 
+// ─── simple text memory (per-repo, global) ─────────────────────────────────
+const MEMORY_DIR         = path.join(__dirname, ".memory");
+const MEMORY_MAX_SESSIONS = 10;       // 直近何セッション分を見るか
+const MEMORY_MAX_CHARS    = 4000;     // System に埋め込む最大文字数
+
+async function appendMemory(body, model) {
+  try {
+    await fsp.mkdir(MEMORY_DIR, { recursive: true });
+    const day = new Date().toISOString().slice(0, 10);
+    const file = path.join(MEMORY_DIR, `history-${day}.jsonl`);
+    const entry = {
+      ts: new Date().toISOString(),
+      model,
+      system: body.system || null,
+      messages: body.messages || []
+    };
+    await fsp.appendFile(file, JSON.stringify(entry) + "\n", "utf8");
+  } catch (e) {
+    // ログ保存失敗は致命的ではないので stderr にだけ出す
+    process.stderr.write(`[memory] append failed: ${e.message}\n`);
+  }
+}
+
+async function loadMemorySummary() {
+  try {
+    await fsp.mkdir(MEMORY_DIR, { recursive: true });
+    const files = (await fsp.readdir(MEMORY_DIR))
+      .filter(f => f.startsWith("history-") && f.endsWith(".jsonl"))
+      .sort(); // 古い日付 → 新しい日付
+    if (!files.length) return "";
+
+    const recent = files.slice(-3); // 直近数日分だけ読む
+    const sessions = [];
+    for (const f of recent) {
+      const full = path.join(MEMORY_DIR, f);
+      const txt = await fsp.readFile(full, "utf8");
+      for (const line of txt.split("\n")) {
+        if (!line.trim()) continue;
+        try {
+          sessions.push(JSON.parse(line));
+        } catch {
+          // ignore bad line
+        }
+      }
+    }
+    if (!sessions.length) return "";
+
+    const recentSessions = sessions.slice(-MEMORY_MAX_SESSIONS);
+    const parts = [];
+    for (const s of recentSessions) {
+      const time = s.ts || "";
+      const msgs = s.messages || [];
+      const summaryPieces = [];
+      for (const m of msgs) {
+        if (!m || !m.role) continue;
+        if (typeof m.content === "string") {
+          const trimmed = m.content.trim();
+          if (!trimmed) continue;
+          summaryPieces.push(`[${m.role}] ${trimmed}`);
+        } else if (Array.isArray(m.content)) {
+          const texts = m.content
+            .filter(b => b.type === "text")
+            .map(b => (b.text || "").trim())
+            .filter(Boolean);
+          if (texts.length) {
+            summaryPieces.push(`[${m.role}] ${texts.join(" ")}`);
+          }
+        }
+      }
+      if (summaryPieces.length) {
+        parts.push(`- (${time})\n` + summaryPieces.join("\n"));
+      }
+    }
+    let joined = parts.join("\n\n");
+    if (joined.length > MEMORY_MAX_CHARS) {
+      joined = joined.slice(-MEMORY_MAX_CHARS);
+    }
+    if (!joined) return "";
+
+    return [
+      "過去の重要な会話メモ（要約）:",
+      joined,
+      "上記は直近のやり取り抜粋です。矛盾がある場合は、最新のユーザー指示を最優先してください。"
+    ].join("\n\n");
+  } catch (e) {
+    process.stderr.write(`[memory] load failed: ${e.message}\n`);
+    return "";
+  }
+}
+
 // GLM model alias: 非公式名 → 智谱公式モデル名 (1211エラー回避)
 const GLM_MODEL_ALIAS = {
   "glm-4.7-flash": "glm-4.7-flash",  // Coding Plan 無制限枠 (推奨)
@@ -33,16 +123,22 @@ const GLM_MODEL_ALIAS = {
 
 
 // ─── format conversion ─────────────────────────────────────────────────────
-function toOpenAIMessages(body) {
+function toOpenAIMessages(body, memoryText) {
   const msgs = [];
   const jpInstruction = "\n\nCRITICAL INSTRUCTION: You must ALWAYS respond in Japanese. 必ず日本語で回答してください。";
   if (body.system) {
     const text = typeof body.system === "string"
       ? body.system
       : body.system.filter(b => b.type === "text").map(b => b.text).join("\n");
-    msgs.push({ role: "system", content: text + jpInstruction });
+    const withMemory = memoryText
+      ? `${memoryText}\n\n---\n\n${text}`
+      : text;
+    msgs.push({ role: "system", content: withMemory + jpInstruction });
   } else {
-    msgs.push({ role: "system", content: jpInstruction.trim() });
+    const base = memoryText
+      ? `${memoryText}\n\n---\n\n${jpInstruction.trim()}`
+      : jpInstruction.trim();
+    msgs.push({ role: "system", content: base });
   }
   for (const m of body.messages || []) {
     if (m.role === "user") {
@@ -100,10 +196,10 @@ function toOpenAIMessages(body) {
   return msgs;
 }
 
-function buildRequest(body, model) {
+function buildRequest(body, model, memoryText) {
   const req = {
     model,
-    messages: toOpenAIMessages(body),
+    messages: toOpenAIMessages(body, memoryText),
     stream: body.stream === true,
   };
   if (body.max_tokens) req.max_tokens = body.max_tokens;
@@ -117,7 +213,7 @@ function buildRequest(body, model) {
 }
 
 // ─── upstream fetch ────────────────────────────────────────────────────────
-async function callUpstream(body, model) {
+async function callUpstream(body, model, memoryText) {
   if (MODE === "openrouter") {
     return fetch(`${OR_BASE}/chat/completions`, {
       method: "POST",
@@ -127,7 +223,7 @@ async function callUpstream(body, model) {
         "HTTP-Referer": "https://claude-bridge-local",
         "X-Title": "Claude Bridge Local",
       },
-      body: JSON.stringify(buildRequest(body, model)),
+      body: JSON.stringify(buildRequest(body, model, memoryText)),
     });
   } else if (MODE === "glm") {
     const resolvedModel = GLM_MODEL_ALIAS[model] || model;
@@ -144,14 +240,14 @@ async function callUpstream(body, model) {
     return fetch(`${GLM_BASE}/chat/completions`, {
       method: "POST",
       headers,
-      body: JSON.stringify(buildRequest(body, resolvedModel)),
+      body: JSON.stringify(buildRequest(body, resolvedModel, memoryText)),
     });
   } else {
     // Ollama local
     return fetch(`${OLLAMA_BASE}/v1/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer dummy" },
-      body: JSON.stringify(buildRequest(body, model)),
+      body: JSON.stringify(buildRequest(body, model, memoryText)),
     });
   }
 }
@@ -256,9 +352,13 @@ async function handleMessages(req, res, model) {
   for await (const chunk of req) raw += chunk;
   const body = JSON.parse(raw);
 
+  // simple text memory: load summary and log this request (fire-and-forget)
+  const memoryText = await loadMemorySummary();
+  appendMemory(body, model).catch(() => {});
+
   let upstreamResp;
   try {
-    upstreamResp = await callUpstream(body, model);
+    upstreamResp = await callUpstream(body, model, memoryText);
   } catch (e) {
     process.stderr.write(`[upstream] ${e.message}\n`);
     if (MODE === "ollama" && (e.cause?.code === "ECONNREFUSED" || /fetch|ECONNREFUSED|connect/i.test(String(e.message)))) {
