@@ -93,6 +93,57 @@ claude-bridge-local/
 
 または手動で設定する場合は [GITHUB_SETUP.md](GITHUB_SETUP.md) を参照。
 
+## 自動保存機能
+
+プロジェクトの変更を自動的に Git にコミット＆プッシュする機能があります。
+
+### 使い方
+
+#### 自動保存の開始
+
+```bash
+# 最小化ウィンドウで起動
+start-autosave.bat
+
+# 完全にバックグラウンドで起動
+start-autosave-hidden.bat
+```
+
+#### 自動保存の確認
+
+```bash
+check-autosave.bat
+```
+
+#### 自動保存の停止
+
+```bash
+stop-autosave.bat
+```
+
+### 設定
+
+デフォルト設定:
+- **チェック間隔**: 5分ごと
+- **コミットメッセージ**: `autosave: YYYYMMDD-HHmmss`
+- **自動プッシュ**: 有効
+
+カスタマイズする場合:
+```powershell
+# 10分ごとにチェック、プッシュなし
+.\Auto-Save-Git.ps1 -IntervalMinutes 10 -NoPush
+```
+
+### ログファイル
+
+自動保存のログは `autosave.log` に保存されます。
+
+### 注意点
+
+- 自動保存は `main` ブランチでのみ動作します
+- マージの競合がある場合は手動で解決が必要です
+- `.gitignore` で除外されたファイルは保存されません
+
 ## トラブルシューティング
 
 ### プロキシが起動しない
@@ -108,6 +159,11 @@ claude-bridge-local/
 - API キーが正しいか確認
 - トークン残高を確認
 - モデル名が正しいか確認 (glm-4.7, glm-4.7-flashx, etc.)
+
+### 自動保存が動作しない
+- PowerShell 実行ポリシーを確認: `Get-ExecutionPolicy`
+- 必要に応じて設定: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+- ログファイルを確認: `check-autosave.bat`
 
 ## ライセンス
 

@@ -1,0 +1,5 @@
+[TEST] Running claude-bridge with llama3.2 non-interactive...
+
+
+[RESULT] Exit code: 0
+‘±s‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢ . . . 

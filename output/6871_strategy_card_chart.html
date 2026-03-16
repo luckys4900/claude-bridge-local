@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #0d1117; color: #c9d1d9;
+    padding: 16px; max-width: 900px; margin: 0 auto;
+  }
+  .header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 16px;
+    border-bottom: 2px solid #30363d; padding-bottom: 8px;
+  }
+  .ticker { font-size: 24px; font-weight: bold; color: #58a6ff; }
+  .badge {
+    padding: 4px 12px; border-radius: 12px;
+    font-size: 12px; font-weight: bold;
+  }
+  .badge-warn { background: #d29922; color: #000; }
+  .badge-danger { background: #f85149; color: #fff; }
+  .badge-ok { background: #3fb950; color: #000; }
+
+  .conclusion {
+    background: #161b22; border-left: 4px solid #58a6ff;
+    padding: 12px 16px; margin: 12px 0; font-size: 18px;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse; margin: 12px 0;
+  }
+  th {
+    background: #21262d; padding: 8px; text-align: left;
+    font-size: 12px; color: #8b949e;
+  }
+  td {
+    padding: 8px; border-bottom: 1px solid #21262d;
+  }
+  .long { color: #3fb950; }
+  .short { color: #f85149; }
+  .neutral { color: #d29922; }
+
+  .timeline {
+    background: #161b22; padding: 12px; margin: 12px 0;
+    border-radius: 6px;
+  }
+  .timeline-item {
+    display: flex; padding: 6px 0;
+    border-left: 2px solid #30363d; padding-left: 12px;
+    margin-left: 8px;
+  }
+  .timeline-time {
+    min-width: 80px; color: #58a6ff; font-weight: bold;
+  }
+
+  .checklist { margin: 12px 0; }
+  .check-item {
+    display: flex; align-items: center; padding: 4px 0;
+  }
+  .check-box {
+    width: 18px; height: 18px; border: 2px solid #30363d;
+    border-radius: 3px; margin-right: 8px; flex-shrink: 0;
+  }
+
+  .risk-box {
+    background: #1c0a0a; border: 1px solid #f85149;
+    border-radius: 6px; padding: 12px; margin: 12px 0;
+  }
+
+  /* 新規：チャートコンテナ */
+  .chart-container {
+    background: #161b22; padding: 16px; margin: 12px 0;
+    border-radius: 6px; border: 1px solid #30363d;
+  }
+  .chart-title {
+    font-size: 14px; font-weight: bold; margin-bottom: 12px;
+    color: #8b949e;
+  }
+  .chart-legend {
+    display: flex; gap: 16px; margin-top: 8px;
+    font-size: 11px; color: #8b949e;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .legend-color {
+    width: 12px; height: 12px; border-radius: 2px;
+  }
+  .chart-notes {
+    margin-top: 12px; font-size: 11px; color: #8b949e;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <span class="ticker">6871 MICRONICS JAPAN CO</span>
+    <div>
+      <span class="badge badge-warn">条件付き</span>
+      <span class="badge badge-danger">流動性⚠ 0.09</span>
+    </div>
+  </div>
+
+  <div class="conclusion">S1条件付き。EV警告あり。C1(12:30-)が優位。</div>
+
+  <!-- 新規：チャート図解 -->
+  <h3 style="color:#8b949e;margin:16px 0 8px">📈 エントリータイミングチャート</h3>
+  <div class="chart-container">
+    <div class="chart-title">価格推移とエントリーポイント（S1/C1）</div>
+    
+      <svg width="800" height="250" viewBox="0 0 800 250">
+        <rect width="800" height="250" fill="#161b22" rx="6"/>
+        
+          <line x1="60" y1="200.0" x2="740" y2="200.0"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="50" y="204.0" fill="#8b949e"
+                font-size="10" text-anchor="end">10,080</text>
+        
+          <line x1="60" y1="100.0" x2="740" y2="100.0"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="50" y="104.0" fill="#8b949e"
+                font-size="10" text-anchor="end">10,450</text>
+        
+          <line x1="60" y1="0.0" x2="740" y2="0.0"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="50" y="4.0" fill="#8b949e"
+                font-size="10" text-anchor="end">10,820</text>
+        
+          <line x1="60.0" y1="0" x2="60.0" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="60.0" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">9:00</text>
+        
+          <line x1="176.66666666666666" y1="0" x2="176.66666666666666" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="176.66666666666666" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">10:00</text>
+        
+          <line x1="293.3333333333333" y1="0" x2="293.3333333333333" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="293.3333333333333" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">11:00</text>
+        
+          <line x1="410.0" y1="0" x2="410.0" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="410.0" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">12:00</text>
+        
+          <line x1="526.6666666666666" y1="0" x2="526.6666666666666" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="526.6666666666666" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">13:00</text>
+        
+          <line x1="643.3333333333334" y1="0" x2="643.3333333333334" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="643.3333333333334" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">14:00</text>
+        
+          <line x1="760.0" y1="0" x2="760.0" y2="200"
+                stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+          <text x="760.0" y="215" fill="#8b949e"
+                font-size="10" text-anchor="middle">15:00</text>
+        
+              <line x1="60" y1="13.513513513513516" x2="740" y2="13.513513513513516"
+                    stroke="#d29922" stroke-width="1" stroke-dasharray="2,2"/>
+              <circle cx="735" cy="13.513513513513516" r="3" fill="#d29922"/>
+              <text x="730" y="16.513513513513516" fill="#d29922"
+                    font-size="9" text-anchor="end">PDC</text>
+            
+              <line x1="60" y1="5.405405405405389" x2="740" y2="5.405405405405389"
+                    stroke="#d29922" stroke-width="1" stroke-dasharray="2,2"/>
+              <circle cx="735" cy="5.405405405405389" r="3" fill="#d29922"/>
+              <text x="730" y="8.40540540540539" fill="#d29922"
+                    font-size="9" text-anchor="end">PMH</text>
+            
+              <line x1="60" y1="-70.27027027027026" x2="740" y2="-70.27027027027026"
+                    stroke="#d29922" stroke-width="1" stroke-dasharray="2,2"/>
+              <circle cx="735" cy="-70.27027027027026" r="3" fill="#d29922"/>
+              <text x="730" y="-67.27027027027026" fill="#d29922"
+                    font-size="9" text-anchor="end">R1</text>
+            
+          <polygon points="118.33333333333333,107.7027027027027 113.33333333333333,97.7027027027027 123.33333333333333,97.7027027027027"
+                   fill="#3fb950" stroke="#2da44e" stroke-width="1"/>
+          <text x="128.33333333333331" y="102.7027027027027" fill="#3fb950" font-size="10">S1 Entry</text>
+          <text x="128.33333333333331" y="114.7027027027027" fill="#8b949e" font-size="9">10,440</text>
+        
+          <line x1="118.33333333333333" y1="102.7027027027027" x2="760.0" y2="186.48648648648648"
+                stroke="#f85149" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="701.6666666666666" y="181.48648648648648" fill="#f85149" font-size="9">S1 SL: 10,130</text>
+        
+          <line x1="118.33333333333333" y1="102.7027027027027" x2="760.0" y2="13.513513513513516"
+                stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="701.6666666666666" y="28.513513513513516" fill="#58a6ff" font-size="9">S1 TP: 10,770</text>
+        
+          <polygon points="497.5,110.4054054054054 492.5,100.4054054054054 502.5,100.4054054054054"
+                   fill="#3fb950" stroke="#2da44e" stroke-width="1"/>
+          <text x="507.5" y="105.4054054054054" fill="#3fb950" font-size="10">C1 Entry</text>
+          <text x="507.5" y="117.4054054054054" fill="#8b949e" font-size="9">10,430</text>
+        
+          <line x1="497.5" y1="105.4054054054054" x2="760.0" y2="164.86486486486487"
+                stroke="#f85149" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="701.6666666666666" y="159.86486486486487" fill="#f85149" font-size="9">C1 SL: 10,210</text>
+        
+          <line x1="497.5" y1="105.4054054054054" x2="760.0" y2="35.13513513513513"
+                stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="701.6666666666666" y="30.13513513513513" fill="#58a6ff" font-size="9">C1 TP1: 10,690</text>
+        
+          <line x1="497.5" y1="105.4054054054054" x2="760.0" y2="13.513513513513516"
+                stroke="#58a6ff" stroke-width="2" stroke-dasharray="4,4"/>
+          <text x="701.6666666666666" y="8.513513513513516" fill="#58a6ff" font-size="9">C1 TP2: 10,770</text>
+        
+          <line x1="60.0" y1="102.7027027027027" x2="147.5" y2="97.2972972972973"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="147.5" y1="97.2972972972973" x2="235.0" y2="102.7027027027027"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="235.0" y1="102.7027027027027" x2="322.5" y2="108.1081081081081"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="322.5" y1="108.1081081081081" x2="410.0" y2="105.4054054054054"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="410.0" y1="105.4054054054054" x2="497.5" y2="100.0"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="497.5" y1="100.0" x2="585.0" y2="102.7027027027027"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+          <line x1="585.0" y1="102.7027027027027" x2="672.5" y2="97.2972972972973"
+                stroke="#8b949e" stroke-width="1.5"/>
+        
+      </svg>
+    
+    <div class="chart-legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background: #3fb950;"></div>
+        <span>エントリー</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #f85149;"></div>
+        <span>ストップロス (SL)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #58a6ff;"></div>
+        <span>ターゲット (TP)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #d29922;"></div>
+        <span>キーレベル</span>
+      </div>
+    </div>
+    <div class="chart-notes">
+      <strong>チャートの読み方：</strong><br>
+      • 縦軸：価格（円）｜横軸：時間（09:00〜15:00）<br>
+      • <span style="color:#3fb950">緑の矢印</span>：エントリータイミング｜<span style="color:#f85149">赤い線</span>：ストップロス<br>
+      • <span style="color:#58a6ff">青い線</span>：利益確定ポイント｜<span style="color:#d29922">黄色い点</span>：キーレベル
+    </div>
+  </div>
+
+  <h3 style="color:#8b949e;margin:16px 0 8px">📊 戦略比較</h3>
+  <table>
+    <tr>
+      <th></th><th>S1（メイン）</th><th>C1（高精度版）</th>
+    </tr>
+    <tr>
+      <td>Entry</td>
+      <td class="long">10,440</td>
+      <td class="long">10,430</td>
+    </tr>
+    <tr>
+      <td>SL</td>
+      <td>10,130</td><td>10,210</td>
+    </tr>
+    <tr>
+      <td>TP</td>
+      <td>10,770</td><td>10,690 → 10,770</td>
+    </tr>
+    <tr>
+      <td>RRR</td>
+      <td class="neutral">1.06</td>
+      <td class="long">1.18</td>
+    </tr>
+    <tr>
+      <td>EV</td>
+      <td class="short">-168円</td>
+      <td class="neutral">-24円</td>
+    </tr>
+    <tr>
+      <td>有効時間</td>
+      <td>09:15〜14:30</td><td>10:30〜14:00</td>
+    </tr>
+    <tr>
+      <td>必要資金</td>
+      <td>6,200万円</td><td>4,400万円</td>
+    </tr>
+  </table>
+
+  <h3 style="color:#8b949e;margin:16px 0 8px">⏰ タイムライン</h3>
+  <div class="timeline">
+    <div class="timeline-item"><span class="timeline-time">09:00-09:15</span><span>観察のみ（Toxic flow回避）</span></div>
+<div class="timeline-item"><span class="timeline-time">09:15-10:30</span><span>S1発動判定（RVOL≥1.5確認）</span></div>
+<div class="timeline-item"><span class="timeline-time">10:30-11:30</span><span>C1待機（S2保持確認中）</span></div>
+<div class="timeline-item"><span class="timeline-time">12:30-13:00</span><span>C1執行帯（唯一のRRR適合帯）</span></div>
+<div class="timeline-item"><span class="timeline-time">13:00-14:00</span><span>RRR不足帯（新規不可）</span></div>
+<div class="timeline-item"><span class="timeline-time">14:00-14:30</span><span>最終判断・手仕舞い</span></div>
+  </div>
+
+  <h3 style="color:#8b949e;margin:16px 0 8px">🚦 Go/No-Go</h3>
+  <div class="checklist">
+    <div class="check-item"><div class="check-box"></div>RVOL≥1.5を確認したか</div>
+<div class="check-item"><div class="check-box"></div>板の厚さ（売買気配100株以上）を確認したか</div>
+<div class="check-item"><div class="check-box"></div>寄り後15分の値幅がATR80%未満か</div>
+<div class="check-item"><div class="check-box"></div>ニュース・イベントを確認したか</div>
+<div class="check-item"><div class="check-box"></div>1トレード最大損失額を計算したか</div>
+  </div>
+
+  <div class="risk-box">
+    <strong>🛡️ リスク</strong><br>
+    1トレード最大損失: 総資金の0.1%以内（50%縮小後）<br>SLタッチで即決済。逆指値を事前設定。<br>14:00までに未発動なら本日終了。
+  </div>
+
+  <div style="color:#484f58;font-size:11px;margin-top:16px;text-align:center">
+    本カードは投資助言ではなくトレード設計メモ。
+    執行は板・歩み値・流動性を確認すること。
+  </div>
+</body>
+</html>

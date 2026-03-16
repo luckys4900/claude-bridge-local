@@ -1,0 +1,7 @@
+[2026-03-14T02:02:20.385Z] Claude Bridge Logger Started
+[2026-03-14T02:02:20.388Z] Requests logged to .claude-bridge\requests-2026-03-14-02-02-20.jsonl
+[2026-03-14T02:02:20.388Z] Transformed requests logged to .claude-bridge\transformed-2026-03-14-02-02-20.jsonl
+[2026-03-14T02:02:20.388Z] Initialized openai client for model: llama3.2:latest
+[2026-03-14T02:02:20.388Z] Claude Bridge interceptor initialized
+[2026-03-14T02:02:20.621Z] Cleaning up interceptor...
+[2026-03-14T02:02:20.622Z] Cleanup complete.

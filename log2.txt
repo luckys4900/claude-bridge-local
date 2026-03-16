@@ -1,0 +1,8 @@
+[STEP1] bat started 
+NPM_BIN=C:\Users\user\AppData\Roaming\npm 
+CLAUDE_JS=C:\Users\user\AppData\Roaming\npm\node_modules\@anthropic-ai\claude-code\cli.js 
+[STEP2] checking files 
+claude-bridge.cmd: OK 
+claude.js: OK 
+[STEP3] running node directly 
+[STEP4] exit code: 0 

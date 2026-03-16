@@ -1,0 +1,13 @@
+
+[Claude-Ollama Bridge]
+  Model : llama3.2:latest
+  Proxy : http://localhost:9099
+  Claude: C:\Users\user\AppData\Roaming\npm\claude.cmd
+
+[OK] Proxy ready. Starting Claude Code...
+
+
+[Done] Claude exited (code 1)
+
+Exit code: 1
+‘±s‚·‚é‚É‚Í‰½‚©ƒL[‚ğ‰Ÿ‚µ‚Ä‚­‚¾‚³‚¢ . . . 

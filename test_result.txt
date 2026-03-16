@@ -1,0 +1,9 @@
+=== Test Start ===
+INTERCEPTOR_URL: file:///C:/Users/user/AppData/Roaming/npm/node_modules/@mariozechner/claude-bridge/dist/interceptor-loader.js
+[Test] claude-bridge interceptor launch (file:// URL fix)
+spawnArgs: --import file:///C:/Users/user/AppData/Roaming/npm/node_modules/@mariozechner/claude-bridge/dist/interceptor-loader.js --no-deprecation C:\Users\user\AppData\Roaming\npm\node_modules\@anthropic-ai\claude-code\cli.js -p respond with exactly: BRIDGE_OK
+  stdout: BRIDGE_OK
+
+  stderr: 
+  status: 0 error: none
+=== Done ===
