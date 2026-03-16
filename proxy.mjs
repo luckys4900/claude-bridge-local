@@ -104,7 +104,7 @@ function buildRequest(body, model) {
   const req = {
     model,
     messages: toOpenAIMessages(body),
-    stream: body.stream !== false,
+    stream: body.stream === true,
   };
   if (body.max_tokens) req.max_tokens = body.max_tokens;
   if (body.tools?.length) {
@@ -256,7 +256,23 @@ async function handleMessages(req, res, model) {
   for await (const chunk of req) raw += chunk;
   const body = JSON.parse(raw);
 
-  const upstreamResp = await callUpstream(body, model);
+  let upstreamResp;
+  try {
+    upstreamResp = await callUpstream(body, model);
+  } catch (e) {
+    process.stderr.write(`[upstream] ${e.message}\n`);
+    if (MODE === "ollama" && (e.cause?.code === "ECONNREFUSED" || /fetch|ECONNREFUSED|connect/i.test(String(e.message)))) {
+      res.writeHead(502);
+      res.end(JSON.stringify({
+        error: "Ollama connection failed",
+        hint: "Ollama is not running. Start Ollama app or run 'ollama serve' in terminal.",
+      }));
+      return;
+    }
+    if (!res.headersSent) { res.writeHead(500); res.end(JSON.stringify({ error: e.message })); }
+    return;
+  }
+
   if (!upstreamResp.ok) {
     const err = await upstreamResp.text();
     process.stderr.write(`[upstream error] ${upstreamResp.status}: ${err}\n`);
@@ -278,6 +294,9 @@ async function handleMessages(req, res, model) {
         }
       }
     } catch (_) {}
+    if (MODE === "ollama" && !errObj.hint) {
+      errObj.hint = `Model may not exist. Run: ollama pull ${model}`;
+    }
     res.writeHead(502); res.end(JSON.stringify(errObj));
     return;
   }
@@ -288,7 +307,7 @@ async function handleMessages(req, res, model) {
   } else {
     const data = await upstreamResp.json();
     const msg = data.choices?.[0]?.message || {};
-    const text = msg.content || msg.reasoning_content || "";
+    const text = msg.content || msg.reasoning || msg.reasoning_content || "";
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({
       id: "msg_" + Math.random().toString(36).slice(2),
