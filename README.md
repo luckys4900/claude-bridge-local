@@ -121,28 +121,42 @@ check-autosave.bat
 stop-autosave.bat
 ```
 
+#### Windows 起動時に自動実行
+
+```bash
+# Windows スタートアップに登録
+install-autosave-startup.bat
+
+# Windows スタートアップから削除
+uninstall-autosave-startup.bat
+```
+
 ### 設定
 
 デフォルト設定:
 - **チェック間隔**: 5分ごと
-- **コミットメッセージ**: `autosave: YYYYMMDD-HHmmss`
+- **コミットメッセージ**: `autosave - YYYYMMDD-HHmmss`
 - **自動プッシュ**: 有効
 
 カスタマイズする場合:
 ```powershell
 # 10分ごとにチェック、プッシュなし
 .\Auto-Save-Git.ps1 -IntervalMinutes 10 -NoPush
+
+# 3分ごとにチェック、サイレントモード
+.\Auto-Save-Git.ps1 -IntervalMinutes 3 -Silent
 ```
 
 ### ログファイル
 
-自動保存のログは `autosave.log` に保存されます。
+自動保存のログは `autosave.log` に保存されます。ログは `.gitignore` で除外されているため、Git には含まれません。
 
 ### 注意点
 
 - 自動保存は `main` ブランチでのみ動作します
 - マージの競合がある場合は手動で解決が必要です
 - `.gitignore` で除外されたファイルは保存されません
+- Windows スタートアップに登録すると、Windows ロイン時に自動的に起動します
 
 ## トラブルシューティング
 
