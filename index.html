@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パチレン｜パチスロ実機のサブスクレンタルサービス</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        .scroll-fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900" x-data="{ mobileMenu: false, scrollToTop: false }" @scroll.window="scrollToTop = (window.pageYOffset > 300)">
+
+    <!-- ヘッダー -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-md" :class="{'shadow-lg': scrollToTop}">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- ロゴ -->
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">P</span>
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">パチレン</span>
+                </a>
+
+                <!-- デスクトップナビゲーション -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-700 hover:text-red-600 font-medium transition">ホーム</a>
+                    <a href="items.html" class="text-gray-700 hover:text-red-600 font-medium transition">商品一覧</a>
+                    <a href="flow.html" class="text-gray-700 hover:text-red-600 font-medium transition">ご利用の流れ</a>
+                    <a href="faq.html" class="text-gray-700 hover:text-red-600 font-medium transition">よくある質問</a>
+                    <a href="contact.html" class="text-gray-700 hover:text-red-600 font-medium transition">お問い合わせ</a>
+                </nav>
+
+                <!-- CTAボタン -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="contact.html" class="btn-primary px-6 py-2 rounded-full text-white font-semibold shadow-lg">
+                        無料で相談する
+                    </a>
+                </div>
+
+                <!-- モバイルメニューボタン -->
+                <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <svg x-show="!mobileMenu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="mobileMenu" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- モバイルメニュー -->
+        <div x-show="mobileMenu" x-transition class="md:hidden bg-white border-t">
+            <div class="px-4 py-4 space-y-3">
+                <a href="index.html" class="block py-2 text-gray-700 hover:text-red-600 font-medium">ホーム</a>
+                <a href="items.html" class="block py-2 text-gray-700 hover:text-red-600 font-medium">商品一覧</a>
+                <a href="flow.html" class="block py-2 text-gray-700 hover:text-red-600 font-medium">ご利用の流れ</a>
+                <a href="faq.html" class="block py-2 text-gray-700 hover:text-red-600 font-medium">よくある質問</a>
+                <a href="contact.html" class="block py-2 text-gray-700 hover:text-red-600 font-medium">お問い合わせ</a>
+                <a href="contact.html" class="block mt-4 btn-primary px-6 py-3 rounded-full text-white font-semibold text-center">
+                    無料で相談する
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインビジュアル -->
+    <section class="hero-gradient min-h-screen flex items-center pt-16 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-red-500 rounded-full filter blur-3xl"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-white">
+                    <div class="inline-block px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-full mb-6">
+                        <span class="text-red-300 text-sm font-medium">🎰 初月半額キャンペーン実施中！</span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        自宅で気軽に<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">パチスロライフ</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+                        月額3,500円〜<br>
+                        手に入れられなかったパチスロ実機をご自宅にお届け！
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="items.html" class="btn-primary px-8 py-4 rounded-full text-white font-bold text-lg text-center shadow-2xl">
+                            商品一覧を見る
+                        </a>
+                        <a href="flow.html" class="px-8 py-4 rounded-full text-white font-bold text-lg border-2 border-white/30 hover:bg-white/10 transition text-center">
+                            利用の流れを確認
+                        </a>
+                    </div>
+                    <div class="mt-12 flex items-center space-x-8 text-gray-400">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-white">300+</div>
+                            <div class="text-sm">取り扱い台数</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-white">5,000+</div>
+                            <div class="text-sm">ご利用者数</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-white">98%</div>
+                            <div class="text-sm">満足度</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="relative">
+                        <div class="absolute -inset-4 bg-gradient-to-r from-red-500 to-orange-500 rounded-3xl blur-2xl opacity-30"></div>
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&h=400&fit=crop" alt="パチスロ実機" class="relative rounded-2xl shadow-2xl w-full">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- サービス紹介 -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">こんな方におすすめ</h2>
+                <p class="text-gray-600 text-lg">あなたのライフスタイルに合わせて楽しめる</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-2xl card-hover scroll-fade-in">
+                    <div class="text-4xl mb-4">🎮</div>
+                    <h3 class="text-xl font-bold mb-2">購入前にお試し</h3>
+                    <p class="text-gray-600">実際に触れてから購入を決めたい方に</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-2xl card-hover scroll-fade-in">
+                    <div class="text-4xl mb-4">🏠</div>
+                    <h3 class="text-xl font-bold mb-2">自宅で楽しむ</h3>
+                    <p class="text-gray-600">ホールに行けない方にも最適</p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-2xl card-hover scroll-fade-in">
+                    <div class="text-4xl mb-4">🎥</div>
+                    <h3 class="text-xl font-bold mb-2">配信・YouTube</h3>
+                    <p class="text-gray-600">実機配信や動画投稿を考えている方に</p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl card-hover scroll-fade-in">
+                    <div class="text-4xl mb-4">📦</div>
+                    <h3 class="text-xl font-bold mb-2">処分不要</h3>
+                    <p class="text-gray-600">売却や処分の手間がかからない</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 新着商品 -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-12 scroll-fade-in">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-2">新着レンタル商品</h2>
+                    <p class="text-gray-600">最新機種をいち早くお届け</p>
+                </div>
+                <a href="items.html" class="hidden md:flex items-center text-red-600 hover:text-red-700 font-medium transition">
+                    すべて見る
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover scroll-fade-in">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=300&fit=crop" alt="スマスロ忍魂参" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">NEW</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">スマスロ 忍魂参</h3>
+                        <p class="text-gray-600 text-sm mb-4">奥義皆伝ノ章</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-red-600">¥5,500</span>
+                            <span class="text-gray-500 text-sm">税込/月</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover scroll-fade-in">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=300&fit=crop" alt="スマスロ シャーマンキング" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">NEW</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">スマスロ シャーマンキング</h3>
+                        <p class="text-gray-600 text-sm mb-4">人気作がついに登場</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-red-600">¥5,500</span>
+                            <span class="text-gray-500 text-sm">税込/月</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover scroll-fade-in">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop" alt="モンスターハンター" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">人気</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">モンスターハンター</h3>
+                        <p class="text-gray-600 text-sm mb-4">月下雷鳴【5号機】</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-red-600">¥5,500</span>
+                            <span class="text-gray-500 text-sm">税込/月</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl overflow-hidden shadow-lg card-hover scroll-fade-in">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&h=300&fit=crop" alt="ANEMONE" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-bold">注目</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-lg mb-2">ANEMONE</h3>
+                        <p class="text-gray-600 text-sm mb-4">交響詩篇エウレカセブン</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-red-600">¥5,500</span>
+                            <span class="text-gray-500 text-sm">税込/月</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-center md:hidden">
+                <a href="items.html" class="btn-primary px-8 py-3 rounded-full text-white font-bold">
+                    すべての商品を見る
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 利用の流れ -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">ご利用の流れ</h2>
+                <p class="text-gray-600 text-lg">簡単3ステップで始められます</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center scroll-fade-in">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                        1
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">商品を選ぶ</h3>
+                    <p class="text-gray-600">豊富なラインナップからお好きな機種をお選びください。在庫確認もスムーズです。</p>
+                </div>
+                <div class="text-center scroll-fade-in">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                        2
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">お申し込み</h3>
+                    <p class="text-gray-600">フォームから簡単お申し込み。即日対応可能です。詳細な説明も行います。</p>
+                </div>
+                <div class="text-center scroll-fade-in">
+                    <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                        3
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">自宅でお楽しみ</h3>
+                    <p class="text-gray-600">実機をご自宅にお届け。お好きな時に気軽に遊べます。サポートも充実。</p>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="flow.html" class="btn-primary px-8 py-4 rounded-full text-white font-bold text-lg shadow-xl">
+                    詳しい流れを見る
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 対応エリア -->
+    <section class="py-20 gradient-bg text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 scroll-fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">対応エリア</h2>
+                <p class="text-gray-200 text-lg">関東圏中心に全国対応</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-6 text-center scroll-fade-in">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-2">東京都</h3>
+                    <p class="text-gray-200">23区全域対応</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-2">神奈川県</h3>
+                    <p class="text-gray-200">横浜・川崎など</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-2">千葉県</h3>
+                    <p class="text-gray-200">船橋・柏など</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-2">埼玉県</h3>
+                    <p class="text-gray-200">さいたまなど</p>
+                </div>
+            </div>
+            <div class="mt-8 text-center scroll-fade-in">
+                <p class="text-gray-200 mb-4">※上記以外のエリアもご相談ください</p>
+                <a href="contact.html" class="inline-block px-8 py-4 bg-white text-purple-600 rounded-full font-bold text-lg shadow-xl hover:bg-gray-100 transition">
+                    エリアについて相談する
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- よくある質問 -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">よくある質問</h2>
+                <p class="text-gray-600 text-lg">お客様からいただくご質問</p>
+            </div>
+            <div x-data="{ openFaq: null }" class="space-y-4 scroll-fade-in">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <button @click="openFaq = openFaq === 1 ? null : 1" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition">
+                        <span class="font-semibold">どのような支払い方法がありますか？</span>
+                        <svg :class="{'rotate-180': openFaq === 1}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 1" x-collapse class="px-6 pb-4 text-gray-600">
+                        クレジットカード、銀行振込、コンビニ払いに対応しています。お支払い方法はお申し込み時にお選びいただけます。
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <button @click="openFaq = openFaq === 2 ? null : 2" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition">
+                        <span class="font-semibold">最低利用期間はありますか？</span>
+                        <svg :class="{'rotate-180': openFaq === 2}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 2" x-collapse class="px-6 pb-4 text-gray-600">
+                        最低利用期間は1ヶ月です。それ以降はいつでも解約可能です。ただし、返却の手続きが必要です。
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <button @click="openFaq = openFaq === 3 ? null : 3" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition">
+                        <span class="font-semibold">掲載されていない機種も借りられますか？</span>
+                        <svg :class="{'rotate-180': openFaq === 3}" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div x-show="openFaq === 3" x-collapse class="px-6 pb-4 text-gray-600">
+                        はい、可能です。お問い合わせフォームよりご希望の機種をご連絡いただければ、取り寄せ可能か調査いたします。
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-12">
+                <a href="faq.html" class="text-red-600 hover:text-red-700 font-semibold transition">
+                    すべての質問を見る →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTAセクション -->
+    <section class="py-20 bg-gradient-to-r from-red-500 to-orange-500 text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center scroll-fade-in">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">まずは無料で相談してみませんか？</h2>
+            <p class="text-xl mb-8 opacity-90">専門スタッフが親身に対応いたします。お気軽にお問い合わせください。</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="contact.html" class="px-8 py-4 bg-white text-red-600 rounded-full font-bold text-lg shadow-xl hover:bg-gray-100 transition">
+                    無料相談フォーム
+                </a>
+                <a href="tel:0120-XXX-XXX" class="px-8 py-4 bg-white/20 backdrop-blur-sm border-2 border-white rounded-full font-bold text-lg hover:bg-white/30 transition">
+                    電話で相談
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">P</span>
+                        </div>
+                        <span class="text-xl font-bold">パチレン</span>
+                    </div>
+                    <p class="text-gray-400">パチスロ実機のサブスクレンタルサービス。自宅で気軽にパチスロライフを楽しめます。</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">サービス</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="items.html" class="hover:text-white transition">商品一覧</a></li>
+                        <li><a href="flow.html" class="hover:text-white transition">ご利用の流れ</a></li>
+                        <li><a href="faq.html" class="hover:text-white transition">よくある質問</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">会社情報</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="privacy.html" class="hover:text-white transition">プライバシーポリシー</a></li>
+                        <li><a href="tokushoho.html" class="hover:text-white transition">特定商取引法に基づく表記</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">お問い合わせ</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="contact.html" class="hover:text-white transition">お問い合わせフォーム</a></li>
+                        <li>TEL: 0120-XXX-XXX</li>
+                        <li>受付時間: 10:00〜20:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2024 パチレン. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- スクロールトップボタン -->
+    <button x-show="scrollToTop" @click="window.scrollTo({top: 0, behavior: 'smooth'})" x-transition class="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full shadow-lg hover:bg-gray-800 transition z-50">
+        <svg class="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+    </button>
+
+    <!-- 固定CTAボタン（モバイル） -->
+    <div class="fixed bottom-20 right-6 md:hidden">
+        <a href="contact.html" class="w-14 h-14 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-xl">
+            <span class="text-white text-2xl">💬</span>
+        </a>
+    </div>
+
+    <script>
+        // スクロールアニメーション
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('.scroll-fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

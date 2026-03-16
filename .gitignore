@@ -1,0 +1,45 @@
+# API Keys & Secrets
+config.json
+.env
+*.env
+!.env.example
+!**/.env.example
+
+# Node
+node_modules/
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+
+# Logs & Temp
+*.log
+*.pid
+log*.txt
+*_out.txt
+*_result.txt
+*_err.txt
+test_result.txt
+debug_log.txt
+.claude-bridge/
+.claude/
+
+# Output
+output/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

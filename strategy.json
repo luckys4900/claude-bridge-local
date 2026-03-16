@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "ticker": "6871",
+    "company": "MICRONICS JAPAN CO",
+    "date": "2026-03-15",
+    "atr": null,
+    "trend": null,
+    "env_score": null,
+    "risk_level": "ELEVATED",
+    "volume_surge": 0.09
+  },
+  "judgment": {
+    "summary": "日足ショートバイアス / 条件付きエントリー可（S1参照）。ただし**流動性不足**（サージ比0.09）＋**EV警告**（TP到達確率22%、詳細はS1参照）。 執行時はポジション50%縮小必須。",
+    "has_ev_warning": true,
+    "liquidity_warning": true,
+    "actionable": true
+  },
+  "key_levels": {
+    "pmh": 10800.0,
+    "pml": 10460.0,
+    "pdc": 10770.0,
+    "r1": 11080.0,
+    "r2": 11210.0,
+    "s1": 10740.0,
+    "s2": 10430.0,
+    "vwap": null,
+    "gap_level": 10437.0,
+    "poc": 10772.0
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "name": "窓埋めリバーサル（ロング）",
+      "direction": "LONG",
+      "entry": 10440.0,
+      "sl": 10130.0,
+      "tp": 10770.0,
+      "rrr": 1.06,
+      "ev": -168.0,
+      "tp_prob": 22.2,
+      "valid_from": "09:15",
+      "valid_until": "14:30",
+      "status": "ACTIVE",
+      "warnings": [
+        "RRR_QUALITY",
+        "NEGATIVE_EV",
+        "LOW_LIQUIDITY",
+        "CAPITAL_REQUIREMENT"
+      ]
+    },
+    {
+      "id": "S2",
+      "entry": 10550.0,
+      "sl": 10860.0,
+      "tp": 10430.0,
+      "rrr": 0.39,
+      "status": "EXCLUDED",
+      "optimization": "Entryを10,650以上に引き上げればRRR≥1.05。 VWAP(10,686)→RRR=1.47。 参考（SLルール外）: PDC(10,770)→RRR=3.78（SL ATR×0.1、基準外）; PMH(10,800)→RRR=6.17（SL ATR×0.07、基準外）。窓埋め進行が前提。"
+    },
+    {
+      "id": "S3",
+      "entry": null,
+      "sl": null,
+      "tp": null,
+      "rrr": null,
+      "status": "EXCLUDED",
+      "optimization": null
+    }
+  ],
+  "contingencies": [
+    {
+      "id": "C1",
+      "name": "期中リバーサル（S2＋RVOL確認）**",
+      "direction": "LONG",
+      "entry": 10430.0,
+      "sl": 10210.0,
+      "tp1": 10690.0,
+      "tp2": 10770.0,
+      "rrr": 1.18,
+      "ev": -24.0,
+      "valid_from": "10:30",
+      "valid_until": "14:00",
+      "executable_bands": "12:30-13:00",
+      "status": "CONTINGENCY"
+    }
+  ],
+  "filters": {
+    "rvol_min": 1.5,
+    "rvol_high": 2.0,
+    "time_bands": [
+      {
+        "range": "09:00-10:30",
+        "min_rrr": 1.0,
+        "type": "active"
+      },
+      {
+        "range": "10:30-11:30",
+        "min_rrr": 1.2,
+        "type": "quiet"
+      },
+      {
+        "range": "12:30-13:00",
+        "min_rrr": 1.0,
+        "type": "reopen"
+      },
+      {
+        "range": "13:00-14:00",
+        "min_rrr": 1.2,
+        "type": "quiet"
+      },
+      {
+        "range": "14:30-15:00",
+        "min_rrr": 1.0,
+        "type": "active"
+      }
+    ],
+    "sl_atr_range": [
+      0.2,
+      0.35
+    ],
+    "liquidity_floor": 0.3
+  },
+  "risk_management": {
+    "max_loss_per_trade": "0.1%",
+    "position_reduction": "50%",
+    "short_restriction": "空売り価格規制に注意",
+    "no_trade_conditions": [
+      "寄り後15分でATR80%消化",
+      "板が極端に薄い"
+    ]
+  },
+  "action_summary": null
+}

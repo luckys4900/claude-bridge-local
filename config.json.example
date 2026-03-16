@@ -1,0 +1,5 @@
+{
+  "openrouter_key": "YOUR_OPENROUTER_API_KEY",
+  "glm_key": "YOUR_ZAI_OR_ZHIPU_API_KEY",
+  "glm_use_coding_plan": true
+}
