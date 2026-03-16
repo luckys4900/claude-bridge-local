@@ -1,5 +1,18 @@
 {
+  "_comment": "Copy this file to config.json and fill in your API keys",
+  
   "openrouter_key": "YOUR_OPENROUTER_API_KEY",
-  "glm_key": "YOUR_ZAI_OR_ZHIPU_API_KEY",
-  "glm_use_coding_plan": true
+  
+  "glm_key": "YOUR_ZHIPU_API_KEY",
+  "glm_zai_key": "YOUR_ZAI_API_KEY",
+  
+  "glm_use_coding_plan": true,
+  
+  "_openrouter_note": "Get your API key from https://openrouter.ai/keys",
+  
+  "_glm_note": "For GLM-4.7 series",
+  
+  "_zai_note": "Z.ai provides unlimited coding quota. Get your key from https://z.ai/manage-apikey/subscription",
+  
+  "_glm_use_coding_note": "true = use Z.ai Coding API (unlimited), false = use standard Zhipu API (paid by usage)"
 }
